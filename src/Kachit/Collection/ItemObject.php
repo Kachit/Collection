@@ -21,4 +21,15 @@ class ItemObject implements ItemInterface {
     public function getId() {
         return $this->id;
     }
+
+    /**
+     * Set Id
+     *
+     * @param mixed $id
+     * @return $this
+     */
+    public function setId($id) {
+        $this->id = $id;
+        return $this;
+    }
 } 

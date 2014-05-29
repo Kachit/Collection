@@ -10,7 +10,7 @@ namespace Kachit\Collection;
 interface ItemInterface {
 
     /**
-     * getId
+     * Get object ID
      *
      * @return mixed
      */
