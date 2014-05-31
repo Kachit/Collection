@@ -1,5 +1,29 @@
 {
+    "name": "kachit/Collection",
+    "require": {
+        "php": ">=5.3.1"
+    },
+    "require-dev": {
+        "satooshi/php-coveralls": "dev-master"
+    },
+    "description": "Simple objects collection class",
+    "version": "0.0.1",
+    "keywords": ["Collection", "Iterator"],
+    "support": {
+        "email": "kachit@yandex.ru",
+        "source": "https://github.com/Kachit/Collection"
+    },
     "autoload": {
         "psr-0": {"Kachit\\Collection": "src/"}
-    }
+    },
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kachit",
+            "email": "kachit@yandex.ru",
+            "homepage": "https://github.com/kachit/",
+            "role": "Developer"
+        }
+    ]
 }

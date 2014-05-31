@@ -1,4 +1,4 @@
 Objects collection
 ==========
 
-Simple objects collection lib
+Simple objects collection class
