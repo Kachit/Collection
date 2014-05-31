@@ -38,7 +38,7 @@ class Collection implements \IteratorAggregate {
     /**
      * getIterator
      *
-     * @return \ArrayIterator|\Traversable
+     * @return \ArrayIterator
      */
     public function getIterator() {
         return new \ArrayIterator($this->data);
@@ -127,7 +127,7 @@ class Collection implements \IteratorAggregate {
      */
     public function fillFromArray(array $objects, $method = self::METHOD_ADD_OBJECT) {
         if (!in_array($method, $this->getMethodsForAddObject())) {
-            throw new Exception('Method "' . $method .'" not exists in collection');
+            throw new Exception('Method "' . $method .'" not available for add objects');
         }
         if (!empty($objects)) {
             foreach ($objects as $item) {
