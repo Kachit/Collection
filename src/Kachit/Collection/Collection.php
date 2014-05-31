@@ -161,7 +161,7 @@ class Collection implements \IteratorAggregate {
      * @return $this
      */
     public function clear() {
-        $this->data = [];
+        $this->data = array();
         return $this;
     }
 
