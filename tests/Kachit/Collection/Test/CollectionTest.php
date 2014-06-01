@@ -52,11 +52,91 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     /**
      * RTFN
      */
+    public function testJsonSerialize() {
+        $result = $this->testable->jsonSerialize();
+        $this->assertNotEmpty($result);
+        $this->assertTrue(is_array($result));
+    }
+
+    /**
+     * RTFN
+     */
+    public function testToArray() {
+        $result = $this->testable->toArray();
+        $this->assertNotEmpty($result);
+        $this->assertTrue(is_array($result));
+    }
+
+    /**
+     * RTFN
+     */
     public function testGetObject() {
         $result = $this->testable->getObject(1);
         $this->assertNotEmpty($result);
         $this->assertTrue(is_object($result));
         $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
+    }
+
+    /**
+     * RTFN
+     */
+    public function testGetFirstObject() {
+        $result = $this->testable->getFirstObject();
+        $this->assertEquals(1, $result->getId());
+    }
+
+    /**
+     * RTFN
+     */
+    public function testGetLastObject() {
+        $result = $this->testable->getLastObject();
+        $this->assertEquals(10, $result->getId());
+    }
+
+    /**
+     * RTFN
+     */
+    public function testExtract() {
+        $filter = [1, 2, 10];
+        $result = $this->testable->extract($filter);
+        $this->assertNotEmpty($result);
+        $this->assertTrue(is_object($result));
+        $this->assertInstanceOf('Kachit\Collection\Collection', $result);
+        $this->assertEquals(3, $result->count());
+        $this->assertTrue($result->hasObject(1));
+        $this->assertTrue($result->hasObject(2));
+        $this->assertTrue($result->hasObject(10));
+    }
+
+    /**
+     * RTFN
+     * @expectedException \Kachit\Collection\Exception
+     * @expectedExceptionMessage Indexes list is not be empty
+     */
+    public function testExtractWithEmptyFilter() {
+        $filter = [];
+        $this->testable->extract($filter);
+    }
+
+    /**
+     * RTFN
+     * @expectedException \Kachit\Collection\Exception
+     * @expectedExceptionMessage This indexes "foo, bar" is not exists in collection
+     */
+    public function testExtractWithBadFilter() {
+        $filter = ['foo', 1, 'bar'];
+        $this->testable->extract($filter);
+    }
+
+    /**
+     * RTFN
+     */
+    public function testCloneObject() {
+        $result = $this->testable->cloneObject(1);
+        $this->assertNotEmpty($result);
+        $this->assertTrue(is_object($result));
+        $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
+        $this->assertFalse($result === $this->testable->getObject(1));
     }
 
     /**
@@ -196,6 +276,15 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     public function testFillFromArrayNotAvailableMethod() {
         $array = $this->getCollectionForMerge()->toArray();
         $this->testable->fillFromArray($array, 'fake');
+    }
+
+    /**
+     * RTFN
+     */
+    public function testSerializeToJson() {
+        $result = json_encode($this->testable);
+        $json = '{"1":{},"2":{},"3":{},"4":{},"5":{},"6":{},"7":{},"8":{},"9":{},"10":{}}';
+        $this->assertEquals($json, $result);
     }
 
     /**

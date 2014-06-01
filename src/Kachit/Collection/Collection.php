@@ -1,12 +1,12 @@
 <?php
 /**
- * Collection
+ * Objects collection
  *
  * @author Kachit
  */
 namespace Kachit\Collection;
 
-class Collection implements \IteratorAggregate {
+class Collection implements \IteratorAggregate, \JsonSerializable {
 
     const METHOD_ADD_OBJECT = 'addObject';
     const METHOD_SET_OBJECT = 'setObject';
@@ -14,7 +14,7 @@ class Collection implements \IteratorAggregate {
     /**
      * @var ItemInterface[]
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * @var array
@@ -29,20 +29,30 @@ class Collection implements \IteratorAggregate {
      *
      * @param array $data
      */
-    public function __construct(array $data = array()) {
+    public function __construct(array $data = []) {
         if (!empty($this->data)) {
             $this->fillFromArray($data);
         }
     }
 
     /**
-     * getIterator
+     * Get iterator
      *
      * @return \ArrayIterator
      */
     public function getIterator() {
         return new \ArrayIterator($this->data);
     }
+
+    /**
+     * Json serialize
+     *
+     * @return ItemInterface[]
+     */
+    public function jsonSerialize() {
+        return $this->toArray();
+    }
+
 
     /**
      * To array
@@ -62,9 +72,37 @@ class Collection implements \IteratorAggregate {
      */
     public function getObject($index) {
         if (!$this->hasObject($index)) {
-            throw new Exception('Object with index "' . $index .'" not exists in collection');
+            $this->handleError('Object with index "' . $index .'" not exists in collection');
         }
         return $this->data[$index];
+    }
+
+    /**
+     * Get cloned object
+     *
+     * @param $index
+     * @return ItemInterface
+     */
+    public function cloneObject($index) {
+        return clone $this->getObject($index);
+    }
+
+    /**
+     * Get first object
+     *
+     * @return ItemInterface
+     */
+    public function getFirstObject() {
+        return array_shift($this->toArray());
+    }
+
+    /**
+     * Get last object
+     *
+     * @return ItemInterface
+     */
+    public function getLastObject() {
+        return array_pop($this->toArray());
     }
 
     /**
@@ -86,7 +124,7 @@ class Collection implements \IteratorAggregate {
      */
     public function deleteObject($index) {
         if (!$this->hasObject($index)) {
-            throw new Exception('Object with index "' . $index .'" not exists in collection');
+            $this->handleError('Object with index "' . $index .'" not exists in collection');
         }
         unset($this->data[$index]);
         return $this;
@@ -112,7 +150,7 @@ class Collection implements \IteratorAggregate {
      */
     public function addObject(ItemInterface $object) {
         if ($this->hasObject($object->getId())) {
-            throw new Exception('Object with index "' . $object->getId() .'" all ready exists in collection');
+            $this->handleError('Object with index "' . $object->getId() .'" all ready exists in collection');
         }
         return $this->setObject($object);
     }
@@ -127,7 +165,7 @@ class Collection implements \IteratorAggregate {
      */
     public function fillFromArray(array $objects, $method = self::METHOD_ADD_OBJECT) {
         if (!in_array($method, $this->getMethodsForAddObject())) {
-            throw new Exception('Method "' . $method .'" not available for add objects');
+            $this->handleError('Method "' . $method .'" not available for add objects');
         }
         if (!empty($objects)) {
             foreach ($objects as $item) {
@@ -161,7 +199,7 @@ class Collection implements \IteratorAggregate {
      * @return $this
      */
     public function clear() {
-        $this->data = array();
+        $this->data = [];
         return $this;
     }
 
@@ -172,6 +210,39 @@ class Collection implements \IteratorAggregate {
      */
     public function getIds() {
         return array_keys($this->data);
+    }
+
+    /**
+     * Return new collection which has
+     *
+     * @param array $keys
+     * @return static|Collection|ItemInterface[]
+     */
+    public function extract(array $keys) {
+        if(empty($keys)) {
+            $this->handleError('Indexes list is not be empty');
+        }
+        $diff = array_diff($keys, $this->getIds());
+        if ($diff) {
+            $this->handleError('This indexes "' . implode(', ', $diff) . '" is not exists in collection');
+        }
+        /* @var Collection $collection */
+        $collection = new static();
+        foreach ($keys as $index) {
+            $collection->addObject($this->getObject($index));
+        }
+        return $collection;
+    }
+
+    /**
+     * Return new collection which has
+     *
+     * @param int $offset
+     * @param int $limit
+     * @return static|Collection|ItemInterface[]
+     */
+    public function slice($offset, $limit) {
+        return new static(array_slice($this->data, $offset, $limit, true));
     }
 
     /**
@@ -198,7 +269,7 @@ class Collection implements \IteratorAggregate {
      * Clone collection
      */
     public function __clone() {
-        $data = array();
+        $data = [];
         foreach ($this->data as $index => $object) {
             $newObject = clone $object;
             $data[$index] = $newObject;
@@ -213,5 +284,15 @@ class Collection implements \IteratorAggregate {
      */
     protected function getMethodsForAddObject() {
         return $this->methodsForAddObject;
+    }
+
+    /**
+     * Handle collection error (throw Exception by default)
+     *
+     * @param string $message
+     * @throws Exception
+     */
+    protected function handleError($message) {
+        throw new Exception($message);
     }
 } 
