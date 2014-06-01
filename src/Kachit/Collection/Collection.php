@@ -241,7 +241,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @param int $limit
      * @return static|Collection|ItemInterface[]
      */
-    public function slice($offset, $limit) {
+    public function slice($offset, $limit = null) {
         return new static(array_slice($this->data, $offset, $limit, true));
     }
 

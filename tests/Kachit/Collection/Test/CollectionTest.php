@@ -153,6 +153,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     public function testCloneCollection() {
         $collection = clone $this->testable;
         $this->assertFalse($collection === $this->testable);
+        $this->assertFalse($collection->getObject(1) === $this->testable->getObject(1));
     }
 
     /**
@@ -328,6 +329,19 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
             $collection->addObject($object);
         }
         return $collection;
+    }
+
+    /**
+     * RTFN
+     */
+    protected function fillCollectionWithStringKeys() {
+        $prefix = 'key';
+        for ($i = 1; $i <= 10; $i++) {
+            $index = $prefix . $i;
+            $object = $this->getTestableObject();
+            $object->setId($index);
+            $this->testable->addObject($object);
+        }
     }
 
     /**
