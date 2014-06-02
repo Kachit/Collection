@@ -11,7 +11,7 @@ use Kachit\Collection\Collection;
 class CollectionTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * @var Collection|TestableObject[]
+     * @var TestableCollection|TestableObject[]
      */
     protected $testable;
 
@@ -19,7 +19,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * Init
      */
     protected function setUp() {
-        $this->testable = new Collection();
+        $this->testable = new TestableCollection();
         $this->fillCollection();
     }
 
@@ -82,7 +82,8 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetFirstObject() {
         $result = $this->testable->getFirstObject();
-        $this->assertEquals(1, $result->getId());
+        $this->assertTrue(is_object($result));
+        $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
     }
 
     /**
@@ -90,7 +91,8 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetLastObject() {
         $result = $this->testable->getLastObject();
-        $this->assertEquals(10, $result->getId());
+        $this->assertTrue(is_object($result));
+        $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
     }
 
     /**
@@ -286,6 +288,50 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $result = json_encode($this->testable);
         $json = '{"1":{},"2":{},"3":{},"4":{},"5":{},"6":{},"7":{},"8":{},"9":{},"10":{}}';
         $this->assertEquals($json, $result);
+    }
+
+    /**
+     * RTFN
+     */
+    public function testGetMethodsForAddObject() {
+        $result = $this->testable->getMethodsForAddObject();
+        $this->assertTrue(is_array($result));
+        $this->assertEquals(2, count($result));
+    }
+
+    /**
+     * RTFN
+     */
+    public function testSliceWithOffsetWithoutLimit() {
+        $result = $this->testable->slice(3);
+        $this->assertEquals(7, $result->count());
+    }
+
+    /**
+     * RTFN
+     */
+    public function testSliceWithOffsetAndLimit() {
+        $result = $this->testable->slice(3, 3);
+        $this->assertEquals(3, $result->count());
+    }
+
+    /**
+     * RTFN
+     */
+    public function testFillCollectionConstruct() {
+        $array = $this->getCollectionForMerge()->toArray();
+        $result = new TestableCollection($array);
+        $this->assertEquals(6, $result->count());
+    }
+
+    /**
+     * RTFN
+     *
+     * @expectedException \Kachit\Collection\Exception
+     * @expectedExceptionMessage Test message
+     */
+    public function testHandleError() {
+        $this->testable->handleError('Test message');
     }
 
     /**

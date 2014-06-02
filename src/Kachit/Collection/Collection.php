@@ -30,7 +30,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @param array $data
      */
     public function __construct(array $data = []) {
-        if (!empty($this->data)) {
+        if (!empty($data)) {
             $this->fillFromArray($data);
         }
     }
@@ -242,7 +242,8 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @return static|Collection|ItemInterface[]
      */
     public function slice($offset, $limit = null) {
-        return new static(array_slice($this->data, $offset, $limit, true));
+        $data = array_slice($this->data, $offset, $limit, true);
+        return new static($data);
     }
 
     /**
