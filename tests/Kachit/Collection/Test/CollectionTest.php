@@ -80,24 +80,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     /**
      * RTFN
      */
-    public function testGetFirstObject() {
-        $result = $this->testable->getFirstObject();
-        $this->assertTrue(is_object($result));
-        $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
-    }
-
-    /**
-     * RTFN
-     */
-    public function testGetLastObject() {
-        $result = $this->testable->getLastObject();
-        $this->assertTrue(is_object($result));
-        $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
-    }
-
-    /**
-     * RTFN
-     */
     public function testExtract() {
         $filter = [1, 2, 10];
         $result = $this->testable->extract($filter);
