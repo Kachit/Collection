@@ -97,7 +97,10 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @return ItemInterface
      * @throws Exception
      */
-    public function getObject($index) {
+    public function getObject($index = null) {
+        if (is_null($index)) {
+            return current($this->data);
+        }
         if (!$this->hasObject($index)) {
             $this->handleError('Object with index "' . $index .'" not exists in collection');
         }
@@ -218,6 +221,28 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      */
     public function isEmpty() {
         return empty($this->data);
+    }
+
+    /**
+     * Filter collection
+     *
+     * @param callable $function
+     * @return static|Collection|ItemInterface[]
+     */
+    public function filter(\Closure $function) {
+        $data = array_filter($this->data, $function);
+        return new static($data);
+    }
+
+    /**
+     * Apply a user function to every member of an collection
+     *
+     * @param callable $function
+     * @return $this
+     */
+    public function walk(\Closure $function) {
+        array_walk($this->data, $function);
+        return $this;
     }
 
     /**

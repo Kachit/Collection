@@ -7,6 +7,7 @@
 namespace Kachit\Collection\Test;
 
 use Kachit\Collection\Collection;
+use Kachit\Collection\ItemInterface;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase {
 
@@ -80,6 +81,17 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     /**
      * RTFN
      */
+    public function testGetObjectWithNullIndex() {
+        $result = $this->testable->getObject();
+        $this->assertNotEmpty($result);
+        $this->assertTrue(is_object($result));
+        $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
+        $this->assertEquals(1, $result->getId());
+    }
+
+    /**
+     * RTFN
+     */
     public function testExtract() {
         $filter = [1, 2, 10];
         $result = $this->testable->extract($filter);
@@ -137,7 +149,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     public function testCloneCollection() {
         $collection = clone $this->testable;
         $this->assertFalse($collection === $this->testable);
-        $this->assertFalse($collection->getObject(1) === $this->testable->getObject(1));
+        foreach ($collection->getIds() as $key) {
+            $this->assertFalse($collection->getObject($key) === $this->testable->getObject($key));
+        }
     }
 
     /**
@@ -285,6 +299,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * RTFN
      */
     public function testSliceWithOffsetWithoutLimit() {
+        $this->fillCollectionWithStringKeys();
         $result = $this->testable->slice(3);
         $this->assertEquals(7, $result->count());
     }
@@ -363,13 +378,28 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * RTFN
      */
     protected function fillCollectionWithStringKeys() {
+        $collection = new TestableCollection();
         $prefix = 'key';
         for ($i = 1; $i <= 10; $i++) {
             $index = $prefix . $i;
             $object = $this->getTestableObject();
             $object->setId($index);
-            $this->testable->addObject($object);
+            $collection->addObject($object);
         }
+        $this->testable = $collection;
+    }
+
+    /**
+     * RTFN
+     *
+     * @return callable
+     */
+    protected function getFunctionForFilter() {
+        /* @var ItemInterface $element */
+        $func = function($element) {
+            return($element->getId() & 1);
+        };
+        return $func;
     }
 
     /**
