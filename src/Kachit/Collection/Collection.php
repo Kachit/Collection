@@ -6,6 +6,9 @@
  */
 namespace Kachit\Collection;
 
+use Kachit\Collection\ErrorHandler\HandlerException;
+use Kachit\Collection\ErrorHandler\HandlerInterface;
+
 class Collection implements \IteratorAggregate, \JsonSerializable {
 
     const METHOD_ADD_OBJECT = 'addObject';
@@ -25,6 +28,11 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
     );
 
     /**
+     * @var HandlerInterface
+     */
+    protected $errorHandler;
+
+    /**
      * Init collection
      *
      * @param array $data
@@ -33,6 +41,25 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
         if (!empty($data)) {
             $this->fillFromArray($data);
         }
+        $this->initErrorHandler();
+    }
+
+    /**
+     * Init error handler
+     */
+    protected function initErrorHandler() {
+        $this->errorHandler = new HandlerException();
+    }
+
+    /**
+     * Set ErrorHandler
+     *
+     * @param HandlerInterface $errorHandler
+     * @return $this;
+     */
+    public function setErrorHandler(HandlerInterface $errorHandler) {
+        $this->errorHandler = $errorHandler;
+        return $this;
     }
 
     /**
@@ -271,9 +298,8 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      */
     public function __clone() {
         $data = [];
-        foreach ($this->data as $index => $object) {
-            $newObject = clone $object;
-            $data[$index] = $newObject;
+        foreach ($this->getIds() as $index) {
+            $data[$index] = $this->cloneObject($index);
         }
         $this->data = $data;
     }
@@ -294,6 +320,6 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @throws Exception
      */
     protected function handleError($message) {
-        throw new Exception($message);
+        $this->errorHandler->handle($message);
     }
 } 

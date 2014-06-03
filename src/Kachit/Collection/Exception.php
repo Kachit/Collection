@@ -8,4 +8,5 @@ namespace Kachit\Collection;
 
 class Exception extends \Exception {
 
+
 } 
