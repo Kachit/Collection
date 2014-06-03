@@ -241,7 +241,9 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @return $this
      */
     public function walk(\Closure $function) {
-        array_walk($this->data, $function);
+        if(!array_walk($this->data, $function)) {
+            $this->handleError('Collection walk error');
+        }
         return $this;
     }
 

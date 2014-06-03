@@ -191,6 +191,34 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     /**
      * RTFN
      */
+    public function testFilterOdd() {
+        $indexes = [1, 3, 5, 7, 9];
+        $function = $this->getFunctionForFilterOdd();
+        $result = $this->testable->filter($function);
+        $this->assertNotEmpty($result);
+        $this->assertTrue(is_object($result));
+        $this->assertInstanceOf('Kachit\Collection\Collection', $result);
+        $this->assertEquals(5, $result->count());
+        foreach ($indexes as $key) {
+            $this->assertTrue($result->hasObject($key));
+        }
+    }
+
+    /**
+     * RTFN
+     */
+    public function testWalkChangeName() {
+        $function = $this->getFunctionForWalkChangeName();
+        $this->testable->walk($function);
+        foreach ($this->testable as $object) {
+            $name = 'name' . $object->getId();
+            $this->assertEquals($name, $object->getName());
+        }
+    }
+
+    /**
+     * RTFN
+     */
     public function testAddObject() {
         $object = $this->getTestableObject();
         $object->setId('foo');
@@ -299,7 +327,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * RTFN
      */
     public function testSliceWithOffsetWithoutLimit() {
-        $this->fillCollectionWithStringKeys();
         $result = $this->testable->slice(3);
         $this->assertEquals(7, $result->count());
     }
@@ -376,17 +403,15 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * RTFN
+     *
+     * @return callable
      */
-    protected function fillCollectionWithStringKeys() {
-        $collection = new TestableCollection();
-        $prefix = 'key';
-        for ($i = 1; $i <= 10; $i++) {
-            $index = $prefix . $i;
-            $object = $this->getTestableObject();
-            $object->setId($index);
-            $collection->addObject($object);
-        }
-        $this->testable = $collection;
+    protected function getFunctionForFilterOdd() {
+        /* @var ItemInterface $element */
+        $func = function($element) {
+            return($element->getId() & 1);
+        };
+        return $func;
     }
 
     /**
@@ -394,10 +419,11 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      *
      * @return callable
      */
-    protected function getFunctionForFilter() {
-        /* @var ItemInterface $element */
+    protected function getFunctionForWalkChangeName() {
+        /* @var TestableObject $element */
         $func = function($element) {
-            return($element->getId() & 1);
+            $name = 'name' . $element->getId();
+            $element->setName($name);
         };
         return $func;
     }
