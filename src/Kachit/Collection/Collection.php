@@ -224,7 +224,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
     }
 
     /**
-     * Filter collection
+     * Filter collection by user function
      *
      * @param callable $function
      * @return static|Collection|ItemInterface[]
@@ -235,6 +235,19 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
     }
 
     /**
+     * Sort collection by user function
+     *
+     * @param callable $function
+     * @return $this
+     */
+    public function sort(\Closure $function) {
+        if(!uasort($this->data, $function)) {
+            $this->handleError('Collection sorting error');
+        }
+        return $this;
+    }
+
+    /**
      * Apply a user function to every member of an collection
      *
      * @param callable $function
@@ -242,7 +255,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      */
     public function walk(\Closure $function) {
         if(!array_walk($this->data, $function)) {
-            $this->handleError('Collection walk error');
+            $this->handleError('Collection walking error');
         }
         return $this;
     }

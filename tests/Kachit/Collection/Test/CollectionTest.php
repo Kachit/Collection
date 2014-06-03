@@ -219,6 +219,17 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     /**
      * RTFN
      */
+    public function testSortSimple() {
+        $this->fillCollectionShuffle();
+        $function = $this->getFunctionForSortSimpleCompare();
+        $this->testable->sort($function);
+        $indexes = range(1, 10);
+        $this->assertEquals($indexes, $this->testable->getIds());
+    }
+
+    /**
+     * RTFN
+     */
     public function testAddObject() {
         $object = $this->getTestableObject();
         $object->setId('foo');
@@ -403,6 +414,15 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * RTFN
+     */
+    protected function fillCollectionShuffle() {
+        $data = $this->testable->toArray();
+        shuffle($data);
+        $this->testable->clear()->fillFromArray($data);
+    }
+
+    /**
+     * RTFN
      *
      * @return callable
      */
@@ -424,6 +444,22 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $func = function($element) {
             $name = 'name' . $element->getId();
             $element->setName($name);
+        };
+        return $func;
+    }
+
+    /**
+     * RTFN
+     *
+     * @return callable
+     */
+    protected function getFunctionForSortSimpleCompare() {
+        /* @var TestableObject $firstObject */
+        $func = function ($firstObject, $secondObject) {
+            if ($firstObject->getId() == $secondObject->getId()) {
+                return 0;
+            }
+            return ($firstObject->getId() < $secondObject->getId()) ? -1 : 1;
         };
         return $func;
     }
