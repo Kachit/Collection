@@ -1,5 +1,5 @@
 {
-    "name": "kachit/Collection",
+    "name": "kachit/collection",
     "require": {
         "php": ">=5.4.0"
     },
