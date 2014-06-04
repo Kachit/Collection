@@ -123,7 +123,8 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @return ItemInterface
      */
     public function getFirstObject() {
-        return array_shift($this->toArray());
+        $data = $this->toArray();
+        return array_shift($data);
     }
 
     /**

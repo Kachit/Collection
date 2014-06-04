@@ -92,6 +92,14 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     /**
      * RTFN
      */
+    public function testGetFirstObject() {
+        $result = $this->testable->getFirstObject();
+        $this->assertEquals(1, $result->getId());
+    }
+
+    /**
+     * RTFN
+     */
     public function testExtract() {
         $filter = [1, 2, 10];
         $result = $this->testable->extract($filter);
