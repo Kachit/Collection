@@ -22,6 +22,7 @@
             <directory suffix=".php">src/Kachit/Collection/</directory>
             <exclude>
                 <file suffix=".php">src/Kachit/Collection/ItemObject.php</file>
+                <file suffix=".php">src/Kachit/Collection/Exception.php</file>
                 <file suffix=".php">src/Kachit/Collection/ErrorHandler/HandlerException.php</file>
             </exclude>
         </whitelist>
