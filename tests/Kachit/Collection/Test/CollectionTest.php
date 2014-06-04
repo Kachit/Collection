@@ -455,8 +455,11 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * @return callable
      */
     protected function getFunctionForFilterOdd() {
-        /* @var ItemInterface $element */
-        $func = function($element) {
+        /**
+         * @param TestableObject $element
+         * @return int
+         */
+        $func = function(TestableObject $element) {
             return($element->getId() & 1);
         };
         return $func;
@@ -468,8 +471,10 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * @return callable
      */
     protected function getFunctionForWalkChangeName() {
-        /* @var TestableObject $element */
-        $func = function($element) {
+        /**
+         * @param TestableObject $element
+         */
+        $func = function(TestableObject $element) {
             $name = 'name' . $element->getId();
             $element->setName($name);
         };
@@ -482,8 +487,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * @return callable
      */
     protected function getFunctionForSortSimpleCompare() {
-        /* @var TestableObject $firstObject */
-        $func = function ($firstObject, $secondObject) {
+        /**
+         * @param TestableObject $firstObject
+         * @param TestableObject $secondObject
+         * @return int
+         */
+        $func = function (TestableObject $firstObject, TestableObject $secondObject) {
             if ($firstObject->getId() == $secondObject->getId()) {
                 return 0;
             }
