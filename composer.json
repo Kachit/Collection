@@ -7,7 +7,7 @@
         "satooshi/php-coveralls": "dev-master"
     },
     "description": "Simple objects collection class",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "keywords": ["Collection", "Iterator"],
     "support": {
         "email": "kachit@yandex.ru",
