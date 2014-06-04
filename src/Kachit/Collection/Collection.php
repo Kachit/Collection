@@ -133,7 +133,8 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @return ItemInterface
      */
     public function getLastObject() {
-        return array_pop($this->toArray());
+        $data = $this->toArray();
+        return array_pop($data);
     }
 
     /**

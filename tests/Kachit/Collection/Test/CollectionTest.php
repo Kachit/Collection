@@ -100,6 +100,14 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     /**
      * RTFN
      */
+    public function testGetLastObject() {
+        $result = $this->testable->getLastObject();
+        $this->assertEquals(10, $result->getId());
+    }
+
+    /**
+     * RTFN
+     */
     public function testExtract() {
         $filter = [1, 2, 10];
         $result = $this->testable->extract($filter);
