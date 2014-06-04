@@ -100,6 +100,18 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     /**
      * RTFN
      */
+    public function testMoveObject() {
+        $result = $this->testable->moveObject(1);
+        $this->assertNotEmpty($result);
+        $this->assertTrue(is_object($result));
+        $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
+        $this->assertEquals(1, $result->getId());
+        $this->assertEquals(9, $this->testable->count());
+    }
+
+    /**
+     * RTFN
+     */
     public function testGetLastObject() {
         $result = $this->testable->getLastObject();
         $this->assertEquals(10, $result->getId());

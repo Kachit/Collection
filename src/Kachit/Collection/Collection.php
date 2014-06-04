@@ -80,7 +80,6 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
         return $this->toArray();
     }
 
-
     /**
      * To array
      *
@@ -110,11 +109,23 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
     /**
      * Get cloned object
      *
-     * @param $index
+     * @param mixed $index
      * @return ItemInterface
      */
     public function cloneObject($index) {
         return clone $this->getObject($index);
+    }
+
+    /**
+     * Move object from collection
+     *
+     * @param mixed $index
+     * @return ItemInterface
+     */
+    public function moveObject($index) {
+        $object = $this->getObject($index);
+        $this->deleteObject($index);
+        return $object;
     }
 
     /**
