@@ -239,8 +239,8 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
     /**
      * Filter collection by user function
      *
-     * @param callable $function
-     * @return static|Collection|ItemInterface[]
+     * @param \Closure $function
+     * @return Collection|ItemInterface[]
      */
     public function filter(\Closure $function) {
         $data = array_filter($this->data, $function);
@@ -250,7 +250,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
     /**
      * Sort collection by user function
      *
-     * @param callable $function
+     * @param \Closure $function
      * @return $this
      */
     public function sort(\Closure $function) {
@@ -263,7 +263,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
     /**
      * Apply a user function to every member of an collection
      *
-     * @param callable $function
+     * @param \Closure $function
      * @return $this
      */
     public function walk(\Closure $function) {
@@ -296,7 +296,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * Return new collection which has
      *
      * @param array $keys
-     * @return static|Collection|ItemInterface[]
+     * @return Collection|ItemInterface[]
      */
     public function extract(array $keys) {
         if(empty($keys)) {
@@ -319,7 +319,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      *
      * @param int $offset
      * @param int $limit
-     * @return static|Collection|ItemInterface[]
+     * @return Collection|ItemInterface[]
      */
     public function slice($offset, $limit = null) {
         $data = array_slice($this->data, $offset, $limit, true);
