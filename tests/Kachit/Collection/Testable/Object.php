@@ -5,41 +5,19 @@
  * @author antoxa <kornilov@realweb.ru>
  * @package Kachit\Collection\Test
  */
-namespace Kachit\Collection\Test;
+namespace Kachit\Collection\Testable;
 
 use Kachit\Collection\ItemInterface;
+use Kachit\Collection\ItemTrait;
 
-class TestableObject implements ItemInterface {
+class Object implements ItemInterface {
 
-    /**
-     * @var mixed
-     */
-    protected $id;
+    use ItemTrait;
 
     /**
      * @var string
      */
     protected $name;
-
-    /**
-     * Get Id
-     *
-     * @return mixed
-     */
-    public function getId() {
-        return $this->id;
-    }
-
-    /**
-     * Set Id
-     *
-     * @param mixed $id
-     * @return $this
-     */
-    public function setId($id) {
-        $this->id = $id;
-        return $this;
-    }
 
     /**
      * Get Name

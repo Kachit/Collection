@@ -21,9 +21,11 @@
         <whitelist>
             <directory suffix=".php">src/Kachit/Collection/</directory>
             <exclude>
-                <file suffix=".php">src/Kachit/Collection/ItemObject.php</file>
+                <file suffix=".php">src/Kachit/Collection/ItemInterface.php</file>
+                <file suffix=".php">src/Kachit/Collection/ItemTrait.php</file>
                 <file suffix=".php">src/Kachit/Collection/Exception.php</file>
                 <file suffix=".php">src/Kachit/Collection/ErrorHandler/HandlerException.php</file>
+                <file suffix=".php">src/Kachit/Collection/ErrorHandler/HandlerInterface.php</file>
             </exclude>
         </whitelist>
     </filter>

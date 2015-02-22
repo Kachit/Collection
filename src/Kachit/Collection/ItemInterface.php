@@ -6,7 +6,6 @@
  */
 namespace Kachit\Collection;
 
-
 interface ItemInterface {
 
     /**

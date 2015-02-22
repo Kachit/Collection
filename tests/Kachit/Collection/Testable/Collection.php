@@ -4,12 +4,12 @@
  *
  * @author Kachit
  */
-namespace Kachit\Collection\Test;
+namespace Kachit\Collection\Testable;
 
-use Kachit\Collection\Collection;
+use Kachit\Collection\Collection as BaseCollection;
 use Kachit\Collection\Exception;
 
-class TestableCollection extends Collection {
+class Collection extends BaseCollection {
 
     /**
      * Get MethodsForAddObject

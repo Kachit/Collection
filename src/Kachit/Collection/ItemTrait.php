@@ -1,12 +1,12 @@
 <?php
 /**
- * ItemObject
+ * Item trait
  *
  * @author Kachit
  */
 namespace Kachit\Collection;
 
-class ItemObject implements ItemInterface {
+trait ItemTrait {
 
     /**
      * @var mixed

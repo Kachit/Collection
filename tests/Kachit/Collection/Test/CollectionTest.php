@@ -9,6 +9,9 @@ namespace Kachit\Collection\Test;
 use Kachit\Collection\Collection;
 use Kachit\Collection\ItemInterface;
 
+use Kachit\Collection\Testable\Collection as TestableCollection;
+use Kachit\Collection\Testable\Object as TestableObject;
+
 class CollectionTest extends \PHPUnit_Framework_TestCase {
 
     /**
@@ -72,7 +75,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * RTFN
      */
     public function testGetObject() {
-        $result = $this->testable->getObject(1);
+        $result = $this->testable->get(1);
         $this->assertNotEmpty($result);
         $this->assertTrue(is_object($result));
         $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
@@ -82,7 +85,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * RTFN
      */
     public function testGetObjectWithNullIndex() {
-        $result = $this->testable->getObject();
+        $result = $this->testable->get();
         $this->assertNotEmpty($result);
         $this->assertTrue(is_object($result));
         $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
@@ -93,7 +96,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * RTFN
      */
     public function testGetFirstObject() {
-        $result = $this->testable->getFirstObject();
+        $result = $this->testable->getFirst();
         $this->assertEquals(1, $result->getId());
     }
 
@@ -101,7 +104,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * RTFN
      */
     public function testMoveObject() {
-        $result = $this->testable->moveObject(1);
+        $result = $this->testable->move(1);
         $this->assertNotEmpty($result);
         $this->assertTrue(is_object($result));
         $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
@@ -113,7 +116,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * RTFN
      */
     public function testGetLastObject() {
-        $result = $this->testable->getLastObject();
+        $result = $this->testable->getLast();
         $this->assertEquals(10, $result->getId());
     }
 
@@ -127,9 +130,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue(is_object($result));
         $this->assertInstanceOf('Kachit\Collection\Collection', $result);
         $this->assertEquals(3, $result->count());
-        $this->assertTrue($result->hasObject(1));
-        $this->assertTrue($result->hasObject(2));
-        $this->assertTrue($result->hasObject(10));
+        $this->assertTrue($result->has(1));
+        $this->assertTrue($result->has(2));
+        $this->assertTrue($result->has(10));
     }
 
     /**
@@ -160,7 +163,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $this->assertNotEmpty($result);
         $this->assertTrue(is_object($result));
         $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
-        $this->assertFalse($result === $this->testable->getObject(1));
+        $this->assertFalse($result === $this->testable->get(1));
     }
 
     /**
@@ -178,7 +181,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $collection = clone $this->testable;
         $this->assertFalse($collection === $this->testable);
         foreach ($collection->getIds() as $key) {
-            $this->assertFalse($collection->getObject($key) === $this->testable->getObject($key));
+            $this->assertFalse($collection->get($key) === $this->testable->get($key));
         }
     }
 
@@ -190,7 +193,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $this->testable->append($collection);
         $this->assertEquals(16, $this->testable->count());
         foreach ($collection as $object) {
-            $this->assertTrue($this->testable->hasObject($object->getId()));
+            $this->assertTrue($this->testable->has($object->getId()));
         }
     }
 
@@ -202,7 +205,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $this->testable->merge($collection);
         $this->assertEquals(12, $this->testable->count());
         foreach ($collection as $object) {
-            $this->assertTrue($this->testable->hasObject($object->getId()));
+            $this->assertTrue($this->testable->has($object->getId()));
         }
     }
 
@@ -228,7 +231,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $this->assertInstanceOf('Kachit\Collection\Collection', $result);
         $this->assertEquals(5, $result->count());
         foreach ($indexes as $key) {
-            $this->assertTrue($result->hasObject($key));
+            $this->assertTrue($result->has($key));
         }
     }
 
@@ -261,9 +264,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     public function testAddObject() {
         $object = $this->getTestableObject();
         $object->setId('foo');
-        $this->testable->addObject($object);
+        $this->testable->add($object);
         $this->assertEquals(11, $this->testable->count());
-        $result = $this->testable->getObject('foo');
+        $result = $this->testable->get('foo');
         $this->assertNotEmpty($result);
         $this->assertTrue(is_object($result));
         $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
@@ -273,7 +276,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * RTFN
      */
     public function testDeleteObject() {
-        $this->testable->deleteObject(1);
+        $this->testable->delete(1);
         $this->assertEquals(9, $this->testable->count());
     }
 
@@ -283,7 +286,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * @expectedExceptionMessage Object with index "100" not exists in collection
      */
     public function testDeleteUnavailableObject() {
-        $this->testable->deleteObject(100);
+        $this->testable->delete(100);
     }
 
     /**
@@ -294,7 +297,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     public function testAddObjectWithExistingIndex() {
         $object = $this->getTestableObject();
         $object->setId(1);
-        $this->testable->addObject($object);
+        $this->testable->add($object);
     }
 
     /**
@@ -303,9 +306,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     public function testSetObject() {
         $object = $this->getTestableObject();
         $object->setId('foo');
-        $this->testable->setObject($object);
+        $this->testable->set($object);
         $this->assertEquals(11, $this->testable->count());
-        $result = $this->testable->getObject('foo');
+        $result = $this->testable->get('foo');
         $this->assertNotEmpty($result);
         $this->assertTrue(is_object($result));
         $this->assertInstanceOf('Kachit\Collection\ItemInterface', $result);
@@ -318,9 +321,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $object = $this->getTestableObject();
         $object->setName('bar');
         $object->setId(1);
-        $this->testable->setObject($object);
+        $this->testable->set($object);
         $this->assertEquals(10, $this->testable->count());
-        $this->assertEquals('bar', $this->testable->getObject(1)->getName());
+        $this->assertEquals('bar', $this->testable->get(1)->getName());
     }
 
     /**
@@ -330,7 +333,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * @expectedExceptionMessage Object with index "100" not exists in collection
      */
     public function testGetObjectUnavailable() {
-        $this->testable->getObject(100);
+        $this->testable->get(100);
     }
 
     /**
@@ -406,7 +409,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         for ($i = 1; $i <= 10; $i++) {
             $object = $this->getTestableObject();
             $object->setId($i);
-            $this->testable->addObject($object);
+            $this->testable->add($object);
         }
     }
 
@@ -420,7 +423,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         for ($i = 15; $i <= 20; $i++) {
             $object = $this->getTestableObject();
             $object->setId($i);
-            $collection->addObject($object);
+            $collection->add($object);
         }
         return $collection;
     }
@@ -435,7 +438,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         for ($i = 7; $i <= 12; $i++) {
             $object = $this->getTestableObject();
             $object->setId($i);
-            $collection->addObject($object);
+            $collection->add($object);
         }
         return $collection;
     }

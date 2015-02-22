@@ -11,8 +11,8 @@ use Kachit\Collection\ErrorHandler\HandlerInterface;
 
 class Collection implements \IteratorAggregate, \JsonSerializable {
 
-    const METHOD_ADD_OBJECT = 'addObject';
-    const METHOD_SET_OBJECT = 'setObject';
+    const METHOD_ADD_OBJECT = 'add';
+    const METHOD_SET_OBJECT = 'set';
 
     /**
      * @var ItemInterface[]
@@ -96,11 +96,11 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @return ItemInterface
      * @throws Exception
      */
-    public function getObject($index = null) {
+    public function get($index = null) {
         if (is_null($index)) {
             return current($this->data);
         }
-        if (!$this->hasObject($index)) {
+        if (!$this->has($index)) {
             $this->handleError('Object with index "' . $index .'" not exists in collection');
         }
         return $this->data[$index];
@@ -113,7 +113,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @return ItemInterface
      */
     public function cloneObject($index) {
-        return clone $this->getObject($index);
+        return clone $this->get($index);
     }
 
     /**
@@ -122,9 +122,9 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @param mixed $index
      * @return ItemInterface
      */
-    public function moveObject($index) {
-        $object = $this->getObject($index);
-        $this->deleteObject($index);
+    public function move($index) {
+        $object = $this->get($index);
+        $this->delete($index);
         return $object;
     }
 
@@ -133,7 +133,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      *
      * @return ItemInterface
      */
-    public function getFirstObject() {
+    public function getFirst() {
         $data = $this->toArray();
         return array_shift($data);
     }
@@ -143,7 +143,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      *
      * @return ItemInterface
      */
-    public function getLastObject() {
+    public function getLast() {
         $data = $this->toArray();
         return array_pop($data);
     }
@@ -154,7 +154,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @param mixed $index
      * @return bool
      */
-    public function hasObject($index) {
+    public function has($index) {
         return isset($this->data[$index]);
     }
 
@@ -165,8 +165,8 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @return $this
      * @throws Exception
      */
-    public function deleteObject($index) {
-        if (!$this->hasObject($index)) {
+    public function delete($index) {
+        if (!$this->has($index)) {
             $this->handleError('Object with index "' . $index .'" not exists in collection');
         }
         unset($this->data[$index]);
@@ -179,7 +179,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @param ItemInterface $object
      * @return $this
      */
-    public function setObject(ItemInterface $object) {
+    public function set(ItemInterface $object) {
         $this->data[$object->getId()] = $object;
         return $this;
     }
@@ -191,11 +191,11 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @return $this
      * @throws Exception
      */
-    public function addObject(ItemInterface $object) {
-        if ($this->hasObject($object->getId())) {
+    public function add(ItemInterface $object) {
+        if ($this->has($object->getId())) {
             $this->handleError('Object with index "' . $object->getId() .'" all ready exists in collection');
         }
-        return $this->setObject($object);
+        return $this->set($object);
     }
 
     /**
@@ -309,7 +309,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
         /* @var Collection $collection */
         $collection = new static();
         foreach ($keys as $index) {
-            $collection->addObject($this->getObject($index));
+            $collection->add($this->get($index));
         }
         return $collection;
     }
@@ -343,7 +343,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable {
      * @return $this
      */
     public function merge(Collection $otherCollection) {
-        return $this->fillFromArray($otherCollection->toArray(), 'setObject');
+        return $this->fillFromArray($otherCollection->toArray(), 'set');
     }
 
     /**
